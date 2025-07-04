@@ -1,0 +1,105 @@
+<div class="container py-4">
+  <div class="container py-5">
+    <div class="text-center mb-5">
+      <h2 class="fw-bold">🚘 Car Information Selector</h2>
+      <p class="text-muted">Select make and year to view vehicle details</p>
+    </div>
+    <div *ngIf="errorMessage" class="alert alert-danger">
+      {{ errorMessage }}
+    </div>
+    <div class="row g-4">
+      <!-- Car Make -->
+      <div class="col-md-6">
+        <label for="carMake" class="form-label fw-semibold">Select Car Make</label>
+        <ng-select [items]="makes"
+                   bindLabel="make_Name"
+                   bindValue="make_ID"
+                   [(ngModel)]="selectedMakeId"
+                   [loading]="isLoadingMakes"
+                   [clearable]="true"
+                   placeholder="-- Select Make --"
+                   (change)="onMakeChange()">
+        </ng-select>
+        <div *ngIf="isLoadingMakes" class="mt-2 text-primary d-flex align-items-center gap-2">
+          <div class="spinner-border spinner-border-sm" role="status"></div>
+          <span>Loading makes...</span>
+        </div>
+      </div>
+
+      <!-- Year -->
+      <div class="col-md-6">
+        <label for="manufactureYear" class="form-label fw-semibold">Select Manufacture Year</label>
+        <ng-select [items]="manufactureYears"
+                   [(ngModel)]="selectedYear"
+                   [clearable]="true"
+                   placeholder="-- Select Year --"
+                   (change)="onMakeYearChange()">
+        </ng-select>
+
+      </div>
+    </div>
+
+    <!-- Vehicle Types -->
+    <div *ngIf="selectedMakeId" class="mt-5">
+      <div *ngIf="vehicleTypes.length > 0" class="card shadow-sm border-0 rounded-4 overflow-hidden">
+        <div class="card-header bg-primary text-white fw-semibold">
+          <i class="bi bi-car-front-fill me-2"></i>
+          Vehicle Types for {{ selectedMakeName }} ({{ selectedYear || 'All Years' }})
+        </div>
+        <div class="card-body bg-light">
+          <ul class="list-group list-group-flush" *ngIf="!isLoadingTypes">
+            <li *ngFor="let type of vehicleTypes" class="list-group-item">{{ type.vehicleTypeName }}
+            </li>
+          </ul>
+          <div *ngIf="isLoadingTypes" class="mt-3 d-flex align-items-center gap-2">
+            <div class="spinner-border text-primary spinner-border-sm" role="status"></div>
+            <span class="text-primary">Loading vehicle types...</span>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="!isLoadingTypes && vehicleTypes.length === 0" class="alert alert-warning mt-4">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        No vehicle types found for the selected criteria.
+      </div>
+    </div>
+
+  </div>
+  <div *ngIf="selectedMakeId && selectedYear && makeModels.length > 0" class="mt-5">
+    <div class="card shadow-sm border-2 rounded-6">
+      <div class="card-header bg-success text-white fw-semibold text-center">
+        Car Models for {{ selectedMakeName }} ({{ selectedYear }})
+      </div>
+
+      <div class="card-body bg-light">
+        <div *ngIf="isLoadingModels" class="d-flex align-items-center gap-2 text-success mb-3">
+          <div class="spinner-border spinner-border-sm" role="status"></div>
+          <span>Loading car models...</span>
+        </div>
+        <div *ngIf="!isLoadingModels" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+          <div *ngFor="let model of makeModels" class="col">
+            <div class="card border-0 shadow-sm h-100 rounded-3">
+              <div class="card-body">
+                <h5 class="card-title text-primary">
+                  <i class="bi bi-car-front-fill me-2"></i>{{ model.model_Name }}
+                </h5>
+                <p class="card-text text-muted mb-0">
+                  <strong>Make:</strong> {{ model.make_Name }}
+                </p>
+                <p class="card-text text-muted">
+                  <strong>Year:</strong> {{ selectedYear }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ❗ No Models Message -->
+  <div *ngIf="selectedMakeId && selectedYear && !isLoadingModels && makeModels.length === 0" class="alert alert-info mt-4">
+    <i class="bi bi-info-circle-fill me-2"></i>
+    No models found for {{ selectedMakeName }} in {{ selectedYear }}.
+  </div>
+
+</div>
