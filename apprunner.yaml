@@ -1,5 +1,5 @@
 version: 1.0
-runtime: dotnet
+runtime: dotnet 8
 build:
   commands:
     - dotnet restore CarInfoApiApp/CarInfoApiApp.csproj
