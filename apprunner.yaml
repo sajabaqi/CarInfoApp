@@ -1,0 +1,20 @@
+version: 1.0
+runtime: dotnet6
+build:
+  commands:
+    build:
+      - echo "Building .NET application"
+      - cd CarInfoApiApp
+      - dotnet restore
+      - dotnet publish -c Release -o out
+run:
+  runtime-version: 6.0
+  command: cd CarInfoApiApp && dotnet out/CarInfoApiApp.dll
+  network:
+    port: 8080
+    env: ASPNETCORE_URLS
+  env:
+    - name: ASPNETCORE_URLS
+      value: http://0.0.0.0:8080
+    - name: ASPNETCORE_ENVIRONMENT
+      value: Production
