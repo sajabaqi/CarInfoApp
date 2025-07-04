@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  # Backend API Service
+  backend:
+    build:
+      context: ./CarInfoApiApp
+      dockerfile: Dockerfile
+    container_name: carinfo-api
+    ports:
+      - "5000:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:80
+    networks:
+      - carinfo-network
+
+  # Frontend Service
+  frontend:
+    build:
+      context: ./CarInfoFrontend
+      dockerfile: Dockerfile
+    container_name: carinfo-frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+    networks:
+      - carinfo-network
+
+networks:
+  carinfo-network:
+    driver: bridge
+
+volumes:
+  carinfo-data:
