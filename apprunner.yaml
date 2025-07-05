@@ -1,11 +1,28 @@
 version: 1.0
-runtime: dotnet 8
-
+runtime: python3.11
 build:
   commands:
-    - dotnet restore CarInfoApiApp/CarInfoApiApp.csproj
-    - dotnet publish CarInfoApiApp/CarInfoApiApp.csproj -c Release -o output
-
+    build:
+      - echo "Installing .NET 8.0"
+      - wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+      - dpkg -i packages-microsoft-prod.deb
+      - apt-get update
+      - apt-get install -y dotnet-sdk-8.0
+      - echo "Building .NET application"
+      - cd CarInfoApiApp
+      - dotnet restore CarInfoApiApp.csproj
+      - dotnet publish CarInfoApiApp.csproj -c Release -o out
+      - echo "Build completed successfully"
 run:
-  command: dotnet CarInfoApiApp.dll
-  workingDirectory: /output
+  runtime-version: 3.11
+  command: cd CarInfoApiApp && dotnet out/CarInfoApiApp.dll
+  network:
+    port: 8080
+    env: ASPNETCORE_URLS
+  env:
+    - name: ASPNETCORE_URLS
+      value: http://0.0.0.0:8080
+    - name: ASPNETCORE_ENVIRONMENT
+      value: Production
+    - name: PATH
+      value: /usr/bin:/bin:/usr/local/bin
