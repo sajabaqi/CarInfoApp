@@ -3,24 +3,9 @@ runtime: dotnet 8
 
 build:
   commands:
-    - echo "Starting build process"
-    - ls -la
-    - echo "Navigating to CarInfoApiApp directory"
-    - cd CarInfoApiApp
-    - ls -la
-    - echo "Restoring packages"
-    - dotnet restore CarInfoApiApp.csproj
-    - echo "Publishing application"
-    - dotnet publish CarInfoApiApp.csproj -c Release -o out
-    - echo "Build completed"
+    - dotnet restore CarInfoApiApp/CarInfoApiApp.csproj
+    - dotnet publish CarInfoApiApp/CarInfoApiApp.csproj -c Release -o output
 
 run:
-  command: dotnet CarInfoApiApp/out/CarInfoApiApp.dll
-  network:
-    port: 8080
-    env: ASPNETCORE_URLS
-  env:
-    - name: ASPNETCORE_URLS
-      value: http://0.0.0.0:8080
-    - name: ASPNETCORE_ENVIRONMENT
-      value: Production
+  command: dotnet CarInfoApiApp.dll
+  workingDirectory: /output
